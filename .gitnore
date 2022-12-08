@@ -1,0 +1,7 @@
+fe/node_modules
+fe/.idea
+be/.idea
+be/package-lock.json
+be/.env
+be/composer.lock
+**/.idea
