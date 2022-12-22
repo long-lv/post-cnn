@@ -1,11 +1,11 @@
 <?php
-namespace App\Repositories;
-use App\Interfaces\UserRepositoryInterface;
+namespace App\Repositories\AdminRepository;
 use App\Models\User;
-use App\Http\Requests\Admin\UserRequest;
+use App\Http\Requests\Admin\User\CreateUserRequest;
+use App\Http\Requests\Admin\User\UpdateUserRequest;
 use Illuminate\Support\Facades\Hash;
 
-class UserRepository implements UserRepositoryInterface {
+class UserRepository{
     protected $user;
     public function __construct(User $user){
         $this->user = $user;
@@ -16,9 +16,10 @@ class UserRepository implements UserRepositoryInterface {
     public function getUserById($id)
     {
         // TODO: Implement getUserById() method.
-        return $this->user->find($id);
+        $user = $this->user->find($id);
+        return $user;
     }
-    public function createUser(UserRequest $request)
+    public function createUser(CreateUserRequest $request)
     {
         // TODO: Implement createUser() method.
         $request->validated();
@@ -28,20 +29,15 @@ class UserRepository implements UserRepositoryInterface {
         $user->password = Hash::make($request['password']);
         $user->role_id = $request['role_id'];
         $user->save();
-        return response()->json($user);
+        return $user;
     }
-    public function updateUser($id, UserRequest $request)
+    public function updateUser($id, UpdateUserRequest $request)
     {
         // TODO: Implement UpdateUser() method.
-        $user = $this->user->find($id);
-        $request->validated();
-        if($user){
-            $user->name = $request['name'];
-            $user->password = Hash::make($request['password']);
-            $user->role_id = $request['role_id'];
-            $user->save();
-        }
-        return response()->json($user);
+       $user = $this->user->find($id);
+       $user->password = Hash::make($request['password']);
+       $user->role_id = $request['role_id'];
+       return $user;
     }
     public function deleteUser($id)
     {

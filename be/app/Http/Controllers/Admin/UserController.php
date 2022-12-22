@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Interfaces\UserRepositoryInterface;
+use App\Services\UserService;
 use Illuminate\Http\Request;
-use App\Http\Requests\Admin\UserRequest;
+use App\Helper\Response;
+use App\Http\Requests\Admin\User\CreateUserRequest;
+use App\Http\Requests\Admin\User\UpdateUserRequest;
 
 class UserController extends Controller
 {
@@ -14,26 +16,19 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    protected $userRepository;
-    public function __construct(UserRepositoryInterface $userRepository){
-        $this->userRepository = $userRepository;
+    protected $userService;
+    public function __construct(UserService $userService){
+        $this->userService = $userService;
     }
     public function index()
     {
         //
-            $result=[];
             try{
-                $result=[
-                    'data'=>$this->userRepository->getListUser(),
-                    'status'=>200
-                ];
-            }catch (Exception $e){
-                $result=[
-                    'status'=>500,
-                    'error'=>$e->getMessage()
-                ];
+                $result=$this->userService->getListUser();
+                return Response::data($result);
+            }catch (\Throwable $th){
+                return Response::dataError($th->getCode(), [], $th->getMessage());
             }
-            return response()->json($result);
 
     }
 
@@ -43,23 +38,15 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserRequest $request)
+    public function store(CreateUserRequest $request)
     {
         //
         try {
-            $result = [
-                'status'=>200,
-                'data'=>$this->userRepository->createUser($request),
-                'msg'=>'create user success'
-            ];
-        }catch (Exception $e){
-            $result = [
-                'status'=> 500,
-                'error'=> $e->getMessage(),
-                'msg'=>'create user not success'
-            ];
+            $result = $this->userService->saveUser($request);
+            return Response::data($result);
+        }catch (\Throwable $th){
+            return Response::dataError($th->getCode(),[],$th->getMessage());   
         }
-        return response()->json($result);
     }
 
     /**
@@ -71,19 +58,12 @@ class UserController extends Controller
     public function show($id)
     {
         //
-        $result=[];
         try{
-            $result=[
-                'data'=>$this->userRepository->getUserById($id),
-                'status'=>200
-            ];
-        }catch (Exception $e){
-            $result=[
-                'status'=>500,
-                'error'=>$e->getMessage()
-            ];
+            $result = $this->userService->getUserById($id);
+            return Response::data($result);
+        }catch (\Throwable $th){
+            return Response::dataError($th->getMessage(),[], $th->getCode());
         }
-        return response()->json($result);
     }
 
     /**
@@ -93,21 +73,14 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserRequest $request, $id)
+    public function update($id,UpdateUserRequest $request)
     {
         //
         try {
-            $result = [
-                'status'=>200,
-                'data'=>$this->userRepository->updateUser($id,$request),
-                'msg'=>'update user success'
-            ];
-        }catch (Exception $e){
-            $result = [
-                'status'=> 500,
-                'error'=> $e->getMessage(),
-                'msg'=>'update user not success'
-            ];
+           $result = $this->userService->updateUser($id,$request);
+           return Response::data($result);
+        }catch (\Throwable $th){
+           return Response::dataError($th->getMessage(),[],$th->getCode());
         }
         return response()->json($result);
     }
@@ -121,20 +94,11 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
-        $result = [];
         try {
-            $result=[
-                'status'=>200,
-                'data'=>$this->userRepository->deleteUser($id),
-                'msg'=>'delete user success'
-            ];
-        }catch (Exception $e){
-            $result=[
-                'status'=>500,
-                'errors'=>$e->getMessage(),
-                'msg'=>'delete user not success'
-            ];
+            $result=$this->userService->deleteUser($id);
+            return Response::data($result);
+        }catch (\Throwable $th){
+           return Response::dataError($th->getMessage(),[], $th->getCode());
         }
-        return response()->json($result);
     }
 }
