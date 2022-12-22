@@ -1,5 +1,5 @@
 <?php 
-namespace App\Services;
+namespace App\Services\Admin;
 use App\Repositories\AdminRepository\UserRepository;
 use App\Helper\Response;
 class UserService{
@@ -49,5 +49,4 @@ class UserService{
         }
     }
 }
-
 ?>

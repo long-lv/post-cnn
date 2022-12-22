@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\RoleController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,4 +21,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::group(['prefix'=>'admin'],function (){
     Route::apiResource('users',UserController::class);
+    Route::apiResource('roles',RoleController::class);
+    Route::apiResource('categories',CategoryController::class);
 });

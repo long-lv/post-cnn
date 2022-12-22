@@ -37,6 +37,7 @@ class UserRepository{
        $user = $this->user->find($id);
        $user->password = Hash::make($request['password']);
        $user->role_id = $request['role_id'];
+       $user->update();
        return $user;
     }
     public function deleteUser($id)
