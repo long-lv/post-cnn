@@ -15,6 +15,12 @@ class CategoryChildren extends Model
     protected $table='category_children';
     protected $fillable=['name','parent_category'];
     public function category(){
-        $this->belongsTo(Category::class);
+        return $this->belongsTo(Category::class);
+    }
+    public function created_by(){
+        return $this->belongsTo(User::class,'created_by','id');
+    }
+    public function post(){
+        return $this->hasOne(Post::class,'id','category_id');
     }
 }

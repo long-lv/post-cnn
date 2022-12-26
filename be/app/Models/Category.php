@@ -18,4 +18,7 @@ class Category extends Model
     public function children_category(){
         return $this->hasOne(children_category::class, 'id', 'parent_category');
     }
+    public function created_by(){
+       return $this->belongsTo(User::class);
+    }
 }
